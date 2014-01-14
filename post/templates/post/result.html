@@ -1,0 +1,9 @@
+<h1>{{ post.content }}</h1>
+
+<ul>
+{% for item in post.comments_set.all %}
+    <li>{{ item.comment }}</li>
+{% endfor %}
+</ul>
+
+<a href="{% url 'detail' post.id %}">Add Comment?</a>

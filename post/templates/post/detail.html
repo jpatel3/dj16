@@ -1,6 +1,13 @@
 <h1>{{ post.content }}</h1>
-<ul>
-{% for comment in post.comments_set.all %}
-    <li>{{ comment.comment }}</li>
-{% endfor %}
-</ul>
+
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form action="{% url 'comment' post.id %}" method="post">
+{% csrf_token %}
+
+<input type="text" name="comment" id="comment{{ forloop.counter }}" value="{{ item.id }}" />
+<label for="comment{{ forloop.counter }}">{{ item.comment }}</label><br />
+
+<input type="submit" value="Comment" />
+</form>
