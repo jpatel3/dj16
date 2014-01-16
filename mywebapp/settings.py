@@ -27,6 +27,8 @@ TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
 
 ALLOWED_HOSTS = []
 
+# Social authentication settings
+# SOCIAL_AUTH_STORAGE = 'social.apps.django_app.me.models.DjangoStorage'
 
 # Application definition
 
@@ -37,7 +39,9 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # 'social.apps.django_app.default',
     'post',
+    'forums',
 )
 
 MIDDLEWARE_CLASSES = (
