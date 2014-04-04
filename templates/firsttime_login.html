@@ -1,0 +1,11 @@
+{% extends "base_home.html" %}
+
+{% block content %}
+<h2>First time login</h2>
+<div>
+{% if user.is_authenticated %}
+	<div>Onboarding page for - {{user}}</div>
+	<a href="/accounts/logout/">Logout</a>
+{% endif %}
+</div>
+{% endblock %}

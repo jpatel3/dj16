@@ -1,0 +1,103 @@
+{% extends "base_home.html" %}
+{% load i18n %}
+
+{% block meta %}
+<title>Families Signup | TuvaLabs</title>
+<meta name="description" content="Signup for family account for your kids!" />
+<script type="text/javascript">
+	$(document).ready(function(){
+
+	$("label[for='id_user_type']").parent().parent(".FormFieldWrapper").hide();									
+
+    $("#registerForm").submit(function(event){
+            event.preventDefault();
+            $(".required").each(function(){ 
+                $($(this).eq(0)).removeClass("ErrorField");
+            });
+            var FormBool = 0;
+            var form = jQuery("#registerForm");
+            form.mask("Saving...");
+            $(".required").each(function(){ 
+               if($(this).eq(0).val()==''){ 
+                $($(this).eq(0)).addClass("ErrorField");
+                FormBool = 1;
+               } 
+            });
+            if(FormBool==1){
+                form.unmask();   
+                $(".FormMessages").show();
+                $(".FormRequiredFieldError").show();
+            } else {
+                $(".FormMessages").hide();
+                $(".FormBackendErrors").hide();
+                $(".FormRequiredFieldError").hide();
+                $(".BackendErrors").html('');
+                var form = jQuery('#registerForm');
+                var formdata = form.serializeArray();
+                var loc = window.location;
+                jQuery.ajax({
+                    type : "POST",
+                    url  : loc,
+                    data : formdata,
+                    success: function(data){
+                        $("#registerForm").unmask();
+                        result = jQuery(data);	
+                        var errorlist = data['errors'];
+                        if(data['fail']==1){
+                            form.unmask();
+                            $(".FormMessages").show();
+                            for(key in errorlist){
+                            var val = errorlist[key];
+                            if(key!="__all__"){
+                                $("#id_"+key).addClass("ErrorField");
+                            } else {
+                            /* __all__ might have other errors too checking for password  */
+                                 var str = val.toString().toLowerCase();
+                                 if(str.indexOf('password')>=0){
+                                     $("#id_password1").addClass("ErrorField");
+                                     $("#id_password2").addClass("ErrorField"); 
+                                }
+                            }
+                            $(".BackendErrors").append(val+"<br/>");
+                            }
+                            $(".FormBackendErrors").show();
+                        }else{
+                            var redirect_url = data['redirect'];
+                            $(".FormSuccess").html("<h3>Student registered successfully !</h3><br/>");
+                            $(".FormSuccess").show();
+                            window.location = 'http://' + window.location.host + '/' + redirect_url + '/';
+                        }
+                    },
+                    error: function(xhr, textStatus, errorThrown){
+                        $("#registerForm").unmask();
+                        $(".FormMessages").show();
+                        $(".FormNetworkErrors").show();
+                    }
+                });
+            }
+          });
+});
+</script>
+{% endblock %}
+	
+{% block content_top %}
+<div class="row" style="padding-top:20px;">
+	<div class="span6">
+		{% include "form_snippet.html" with FormTitle="Parent Registration" %}
+	</div>
+    <div class="span6 InfoBox">
+       <div class="InfoHead">
+            <p class="InfoTitle">3 Reasons to Try TuvaLabs</p>
+       </div>
+       <div class="InfoBlock">
+            <p class="InfoTitle"><span>1</span>&nbsp;&nbsp;Common Core</p><br/><p>Transition successfully to the Common Core.</p>
+       </div>
+       <div class="InfoBlock">
+            <p class="InfoTitle"><span>2</span>&nbsp;&nbsp;Real World</p><br/><p>Enable real-world based, truly personalized math learning your classroom.</p>
+       </div>
+       <div class="InfoBlockLast">
+            <p class="InfoTitle"><span>3</span>&nbsp;&nbsp;Progress</p><br/><p>Meet Academic Yearly Progress.</p>
+       </div>
+    </div>
+</div>
+{% endblock %}

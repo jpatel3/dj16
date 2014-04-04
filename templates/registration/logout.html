@@ -1,0 +1,14 @@
+{% extends "base_home.html" %}
+{% load i18n %}
+
+{% block content_top %}
+<!--[if IE]>
+	<h2> Logged out! </h2><br />
+<![endif]-->
+<![if !IE]>
+	<legend> Logged out! </legend>
+<![endif]>
+<p>{% trans "Login as different user " %} <a href='/accounts/login/'>Click Here</a></p>
+<p>{% trans "Go back to Home Page " %} <a href='/'>Click Here</a></p>
+{% endblock %}
+

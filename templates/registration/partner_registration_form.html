@@ -1,0 +1,59 @@
+{% extends "base_home.html" %}
+{% load i18n %}
+
+{% block meta %}
+<script type="text/javascript">
+$(document).ready(function(){
+	var form = jQuery("#registerForm");
+	form.submit(function(e){
+		//mask partner registration form
+		$("#partner_registration").mask("Saving...");
+		var form = jQuery('#registerForm');
+		var formdata = form.serializeArray();
+		var loca = window.location;
+		jQuery.ajax({
+			type : "POST",
+			url  : loc,
+			data : formdata,
+			success: function(data){
+				$("#partner_registration").unmask();
+				result = jQuery(data);	
+				jQuery(".message").show();
+				jQuery(".message").html("<h3>Thank you.</h3>")
+				$('#registerForm').each(function(){
+					this.reset();
+				});
+			},
+			error: function(xhr, textStatus, errorThrown){
+				$("#partner_registration").unmask();
+				jQuery(".message").show();
+		  		jQuery(".message").html("<h3><p class='text-error'>Please fill out mandatory fields.</p></h3>");
+		    }
+		});
+	e.preventDefault();	
+	});
+});
+</script>
+{% endblock %}
+
+{% block content_top %}
+<div class="row" style="padding-top:20px;">
+	<div class="span8 offset2">
+		<div class="split-well" align="center">
+			<div id="partner_registration" class="home-header-grey">
+				<span class="w_title">Register for TuvaLabs Partner Account!</span>
+			</div>
+			<div class="tuva-home-subtext">
+				<form id="registerForm" method="post" action="">
+					{% csrf_token %}
+					<table><tr><td>
+						 {{ form.as_table }}
+					</td></tr></table>
+					<input type="submit" class="btn success-btn" value="{% trans 'Submit' %}" />
+				</form>
+			</div>
+			<div class="message"></div>
+		</div>
+	</div>
+</div>
+{% endblock %}

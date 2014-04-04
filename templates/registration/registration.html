@@ -1,0 +1,49 @@
+{% extends "base_home.html" %}
+{% load i18n %}
+{% block meta %}
+<title>Signup | TuvaLabs</title>
+<meta name="description" content="Signup for Teacher, Student, Parents account!" />
+<script>
+	$(document).ready(function(){
+		//activate signup
+		$('li#signup').addClass('active');
+	});
+</script>
+{% endblock %}
+{% block content_top %}
+<div class="row" style="padding-top:20px;">
+	<div class="span5" style="padding-left:40px">
+		<div class="split-well" align="center">
+			<div class="home-header-grey">
+				<span class="w_title">Teacher Account</span>
+			</div>
+			<div class="row">
+				<img src="{{STATIC_URL}}img/homepage/teacher_in_class.png">
+				<a href="/accounts/register/teacher/"><div style="align:center;">
+					<div class="tuva-green-well" align="center"><h2>Register</h2></div></div>
+				</a>
+			</div>
+		</div>
+	</div>
+	<div class="span5" style="padding-left:60px">
+		<div class="split-well" align="center">
+			<div class="home-header-grey">
+				<span class="w_title">Student Account</span>
+			</div>
+			<div class="row">
+					<div class="kid">
+						<img src="{{STATIC_URL}}img/homepage/kid_at_home.png">
+					</div>
+					<a href="/accounts/register/student/">
+						<div style="align:center;">
+							<div class="tuva-green-well" align="center">
+								<h2>Register</h2>
+							</div>
+						</div>
+					</a>
+			</div>
+			
+		</div>
+	</div>
+</div>
+{% endblock %}

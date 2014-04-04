@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-
+SITE_ID = 1
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
@@ -26,9 +26,37 @@ TEMPLATE_DEBUG = True
 TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
 
 ALLOWED_HOSTS = []
-
+LOGOUT_URL = '/'
+LOGIN_URL = '/accounts/login/'
 # Social authentication settings
-# SOCIAL_AUTH_STORAGE = 'social.apps.django_app.me.models.DjangoStorage'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/social/logged-in/'
+SOCIAL_AUTH_LOGIN_ERROR_URL = '/login-error/'
+SOCIAL_AUTH_LOGIN_URL = '/login-url/'
+SOCIAL_AUTH_NEW_USER_REDIRECT_URL = '/new-users/select-role/'
+SOCIAL_AUTH_DISCONNECT_REDIRECT_URL = '/account-disconnected-redirect-url/'
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '986184118708-2f7hahmqtl2ivqg3a12244o5mkb6ouin.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'KdmRX5HLVlmWrgnGjcAlNaIM'
+
+SOCIAL_AUTH_GOOGLE_OAUTH_SCOPE = [
+    'https://www.googleapis.com/auth/drive',
+    'https://www.googleapis.com/auth/userinfo.profile'
+]
+
+GOOGLE_SOCIAL_AUTH_RAISE_EXCEPTIONS = True
+SOCIAL_AUTH_RAISE_EXCEPTIONS = True
+RAISE_EXCEPTIONS = True
+
+# SOCIAL_AUTH_USER_MODEL = 'django.contrib.auth.user'
+SOCIAL_AUTH_UID_LENGTH = 223
+SOCIAL_AUTH_NONCE_SERVER_URL_LENGTH = 40
+# Default value to use as username, can be a callable. An UUID will be appended in case of duplicate entries.
+SOCIAL_AUTH_DEFAULT_USERNAME = 'tuva'
+# This controls the length of the UUID appended to usernames.
+SOCIAL_AUTH_UUID_LENGTH = 16
+# If you want to use the full email address as the username, define this setting.
+SOCIAL_AUTH_USERNAME_IS_FULL_EMAIL = False
+
 
 # Application definition
 
@@ -37,12 +65,28 @@ INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
+    'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'threadedcomments',
+    'django.contrib.comments',
+    'registration',
+    'social.apps.django_app.default',
     # 'social.apps.django_app.default',
+    # 'django.contrib.comments',
+    # 'mptt',
+    # 'comments',
     'post',
     'forums',
 )
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'social.apps.django_app.context_processors.backends',
+    'social.apps.django_app.context_processors.login_redirect',
+    'django.contrib.auth.context_processors.auth',
+)
+
+COMMENTS_APP = 'threadedcomments'
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -67,6 +111,11 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+AUTHENTICATION_BACKENDS = (
+    'social.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/

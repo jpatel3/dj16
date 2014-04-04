@@ -1,0 +1,13 @@
+{% extends "base_home.html" %}
+
+{% block content %}
+<h2>Existing User</h2>
+<div>
+{% if user.is_authenticated %}
+	<div>Existing user - {{user}}</div>
+	<a href="/accounts/logout/">Logout</a>
+{% else %}
+	<a href="{% url 'social:begin' 'google-oauth2' %}">Login with Google</a>
+{% endif %}
+</div>
+{% endblock %}

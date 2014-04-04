@@ -1,0 +1,145 @@
+{% extends "base_home.html" %}
+{% load i18n %}
+
+{% block meta %}
+<title>TuvaLabs | Teacher Registration</title>
+<meta name="description" content="Signup for teacher account!" />
+<script type="text/javascript">
+    $(document).ready(function(){
+        // //hide school name on default load
+        // var school_name_field = $("label[for='id_school_name']").parent().parent(".FormFieldWrapper");
+        // var school_code_field = $("label[for='id_school_code']").parent().parent(".FormFieldWrapper");
+        // school_name_field.hide(); 
+        $("label[for='id_user_type']").parent().parent(".FormFieldWrapper").hide();                                 
+        //         //school code change 
+        // $("input[name='school_code_ind']").change(function(){
+        //     var selected_radio = $("input[name='school_code_ind']:checked").val();
+        //     if (selected_radio == 'Y')   {
+        //         school_name_field.hide();
+        //         $("#id_school_name").removeClass("required");                   
+        //         school_code_field.show();
+        //         $("#id_school_code").addClass("required");              
+        //         $("#id_school_name").val("");
+        //     }
+        //     else{
+        //         school_name_field.show();
+        //         $("#id_school_name").addClass("required");
+        //         $("#id_school_code").removeClass("required");                   
+        //         school_code_field.hide();               
+        //         $("#id_school_code").val("");
+        //     }
+        // });
+    
+        
+        // $('input[name="school_code_ind"]:eq(1)').click();
+        
+        // $("#id_school_name").addClass("required");              
+        $("#registerForm").submit(function(event){
+            event.preventDefault();
+            $(".required").each(function(){ 
+                $($(this).eq(0)).removeClass("ErrorField");
+            });
+            var FormBool = 0;
+            var form = jQuery("#registerForm");
+                form.mask("Saving...");
+            $(".required").each(function(){ 
+                           if($(this).eq(0).val()==''){ 
+                               $($(this).eq(0)).addClass("ErrorField");
+                               FormBool = 1;
+               } 
+                        });
+            if(FormBool==1){
+                form.unmask();   
+                                $(".FormMessages").show();
+                                $(".FormRequiredFieldError").show();
+                        } else {
+                                $(".FormMessages").hide();
+                                $(".FormBackendErrors").hide();
+                $(".FormRequiredFieldError").hide();
+                $(".BackendErrors").html('');
+                var form = jQuery('#registerForm');
+                var formdata = form.serializeArray();
+                var loc = window.location;
+                jQuery.ajax({
+                    type : "POST",
+                    url  : loc,
+                    data : formdata,
+                    success: function(data){
+                         $("#registerForm").unmask();
+                         result = jQuery(data); 
+                                             var errorlist = data['errors'];
+                         if(data['fail']==1){
+                            form.unmask();
+                            $(".FormMessages").show();
+                            for(key in errorlist){
+                                    var val = errorlist[key];
+                                   if(key!="__all__"){
+                                       $("#id_"+key).addClass("ErrorField");
+                                   } else {
+                                   /* __all__ might have other errors too checking for password  */
+                                       var str = val.toString().toLowerCase();
+                                       if(str.indexOf('password')>=0){
+                                           $("#id_password1").addClass("ErrorField");
+                                           $("#id_password2").addClass("ErrorField"); 
+                                       }
+                                  }
+                                  $(".BackendErrors").append(val+"<br/>");
+                               }
+                              $(".FormBackendErrors").show();
+                        }else{
+                            //disply success message
+                            var redirect_url = data['redirect'];
+                            $(".FormSuccess").html('<h3>Registration Successfull! Let\'s get started!</br></h3>');
+                            $(".FormSuccess").show();
+                            window.location = 'http://' + window.location.host + '/' + redirect_url + '/';
+                        }
+                    },
+                    error: function(xhr, textStatus, errorThrown){
+                        $("#registerForm").unmask();
+                        $(".FormMessages").show();
+                        $(".FormNetworkErrors").show();
+                    }
+                });
+            }
+          });
+});
+</script>
+{% endblock %}
+
+{% block content_head_top %}
+<div class="row" style="padding-bottom:10px;">
+    <div class="dashboard-head">
+        <div class="container">
+            <div class="span12 full-heading-parent">
+                <div class="pull-left">
+                    <div id="dataset-title" class="heading">
+                        <h2>Teacher Sign Up</h2>
+                    </div>
+                </div>
+                <div class="pull-right">
+                    <div id="dataset-title" class="heading">
+                        <h2>Get Started. It's Free!</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content_top %}
+<div class="row" style="padding-top:20px;">
+    <div class="span9">
+        {% include "form_snippet.html" with FormTitle="Teacher Registration" %}
+    </div>
+    <div class="span3 pull-right">
+        <div style="height:400px;border-left: 1px solid #ccc;">        
+            <div style="margin-left:20px;position:relative;top:40%;">
+                <h3>Are you a student?</h3>
+                <a href="/accounts/register/student/" title="Teacher Signup">Click Here</a> to Sign Up!
+            </div>
+        </div>
+    </div>
+</div>
+<div class="clear" style="height:30px;">&nbsp;</div>
+{% endblock %}

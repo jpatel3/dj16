@@ -6,7 +6,8 @@ from django.template import RequestContext, loader
 from django.core.urlresolvers import reverse
 from django.views import generic
 from django.utils import timezone
-
+from django.shortcuts import render_to_response
+from django.template import RequestContext
 
 
 # def index(request):
@@ -57,6 +58,24 @@ class ResultsView(generic.DetailView):
     model = Post
     template_name = 'post/result.html'
 
+def home(request):
+    return render_to_response(
+                'home.html',
+                context_instance=RequestContext(request)
+            )
+
+def already_registered(request):
+    return render_to_response(
+        'already_registered.html',
+        context_instance=RequestContext(request)
+    )
+
+def select_role(request):
+    # save the user and take him to further page
+    return render_to_response(
+            'firsttime_login.html',
+            context_instance=RequestContext(request)
+        )
     
 def comment(request, post_id):
     p = get_object_or_404(Post, pk=post_id)
